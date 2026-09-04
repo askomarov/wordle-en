@@ -1,0 +1,23 @@
+---
+description: Общий контекст проекта agent-game для всех агентов
+alwaysApply: true
+---
+
+# agent-game
+
+This is a small browser game.
+
+Stack:
+
+- HTML
+- CSS
+- Vanilla JavaScript
+
+Rules:
+
+- Keep the code simple.
+- Do not introduce frameworks.
+- Do not install dependencies unless necessary.
+- Game must work by opening index.html.
+- Keep game logic separate from UI logic.
+- Always test the game after making changes.
