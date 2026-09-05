@@ -31,7 +31,7 @@
         </div>
       </header>
 
-      <main class="words-page">
+      <main class="words-page" data-words-search>
         <h1 class="words-title">Word list</h1>
         <p class="words-lead">
           Every word you can enter in the game. Set a 5-slot pattern —
@@ -51,15 +51,16 @@
             autocapitalize="characters" spellcheck="false" aria-label="Letter 5" data-index="4" />
         </div>
 
-        <p class="words-count" id="words-count" aria-live="polite"></p>
+        <p class="words-count" id="words-count" data-words-count aria-live="polite"></p>
         <div class="words-list-wrap">
-          <ul class="words-list" id="words-list"></ul>
+          <ul class="words-list" id="words-list" data-words-list></ul>
         </div>
       </main>
     </div>
 
     <script src="js/words.js"></script>
     <script src="js/words-page.js"></script>
+    <script src="js/words-boot.js"></script>
   </body>
 
 </html>

@@ -22,7 +22,6 @@
   const PRESS_MS = 100;
   const SHAKE_MS = 340;
   const WIN_BOUNCE_MS = 440 + 240;
-  const HELP_EXIT_MS = 160;
 
   const KEY_ROWS = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -43,8 +42,7 @@
       toast: document.getElementById('toast'),
       newGameBtn: document.getElementById('new-game-btn'),
       helpBtn: document.getElementById('help-btn'),
-      helpOverlay: document.getElementById('help-overlay'),
-      helpGotIt: document.getElementById('help-got-it'),
+      helpDialog: document.getElementById('help-dialog'),
       errorBanner: document.getElementById('error-banner'),
     };
 
@@ -54,7 +52,6 @@
     let rowEls = [];
     let tileEls = [];
     const keyEls = new Map();
-    let helpClosing = false;
 
     buildBoard();
     buildKeyboard();
@@ -83,9 +80,8 @@
 
     els.newGameBtn.addEventListener('click', () => onNewGame());
     els.helpBtn.addEventListener('click', () => openHelp());
-    els.helpGotIt.addEventListener('click', () => closeHelp());
-    els.helpOverlay.addEventListener('click', (e) => {
-      if (e.target === els.helpOverlay) closeHelp();
+    els.helpDialog.addEventListener('close', () => {
+      localStorage.setItem(HOW_TO_KEY, '1');
     });
 
     window.addEventListener('keydown', onKeyDown);
@@ -369,48 +365,19 @@
     }
 
     function openHelp() {
-      if (helpClosing) return;
-      if (!els.helpOverlay.hidden && els.helpOverlay.classList.contains('is-open')) {
-        return;
+      if (!els.helpDialog || els.helpDialog.open) return;
+      if (typeof els.helpDialog.showModal === 'function') {
+        els.helpDialog.showModal();
+      } else {
+        els.helpDialog.setAttribute('open', '');
       }
-
-      els.helpOverlay.hidden = false;
-      els.helpOverlay.classList.remove('is-closing');
-
-      if (prefersReducedMotion()) {
-        els.helpOverlay.classList.add('is-open');
-        return;
-      }
-
-      // reflow so enter transition runs from the closed state
-      void els.helpOverlay.offsetWidth;
-      els.helpOverlay.classList.add('is-open');
-    }
-
-    async function closeHelp() {
-      localStorage.setItem(HOW_TO_KEY, '1');
-      if (els.helpOverlay.hidden || helpClosing) return;
-
-      if (prefersReducedMotion() || !els.helpOverlay.classList.contains('is-open')) {
-        els.helpOverlay.classList.remove('is-open', 'is-closing');
-        els.helpOverlay.hidden = true;
-        return;
-      }
-
-      helpClosing = true;
-      els.helpOverlay.classList.remove('is-open');
-      els.helpOverlay.classList.add('is-closing');
-      await sleep(HELP_EXIT_MS);
-      els.helpOverlay.hidden = true;
-      els.helpOverlay.classList.remove('is-closing');
-      helpClosing = false;
     }
 
     function onKeyDown(e) {
-      if (!els.helpOverlay.hidden) {
-        if (e.key === 'Escape') closeHelp();
-        return;
-      }
+      const dictDialog = document.getElementById('dict-dialog');
+      if (dictDialog && dictDialog.open) return;
+      if (els.helpDialog && els.helpDialog.open) return;
+
       if (e.ctrlKey || e.metaKey || e.altKey) return;
 
       if (e.key === 'Enter') {
