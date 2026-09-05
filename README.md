@@ -1,6 +1,6 @@
 # WORDS
 
-A browser word game: guess the secret **5-letter word** in **5 tries**.  
+A browser word game: guess the secret **5-letter word** in **5 tries**.
 English Wordle-style play with a QWERTY keyboard and a local word list.
 
 ## Screenshots
@@ -26,13 +26,13 @@ There is also a **Word list** page (linked from Help) with OTP-style pattern sea
 
 ## Stack
 
-| Layer | Tech |
-| ----- | ---- |
-| UI | HTML5, CSS3 (no preprocessors) |
-| Logic | Vanilla JavaScript (IIFEs on `window`) |
-| Dictionary | Local list of 5-letter words (`solutions` ⊆ `validGuesses`) |
-| Fonts | [IBM Plex Sans](https://fonts.google.com/specimen/IBM+Plex+Sans), [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) |
-| Hosting | GitHub Pages (static, no build) |
+| Layer      | Tech                                                                                                                               |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| UI         | HTML5, CSS3 (no preprocessors)                                                                                                     |
+| Logic      | Vanilla JavaScript (IIFEs on `window`)                                                                                             |
+| Dictionary | Local list of 5-letter words (`solutions` ⊆ `validGuesses`)                                                                        |
+| Fonts      | [IBM Plex Sans](https://fonts.google.com/specimen/IBM+Plex+Sans), [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) |
+| Hosting    | GitHub Pages (static, no build)                                                                                                    |
 
 No dependencies and no bundler: open `index.html` and play.
 
@@ -66,7 +66,7 @@ python3 -m http.server 8080
 
 Published on GitHub Pages:
 
-**https://askomarov.github.io/agent-game/**
+**https://askomarov.github.io/wordle-en/**
 
 ## License
 
