@@ -14,10 +14,15 @@
   } = global.AgentGame;
 
   const HOW_TO_KEY = 'agent-how-to-play-seen';
-  const REVEAL_MS = 350;
-  const REVEAL_STAGGER = 120;
+  const REVEAL_MS = 320;
+  // 4 gaps × 90ms = 360ms total stagger (<500ms motion guideline)
+  const REVEAL_STAGGER = 90;
   const TOAST_ERROR_MS = 1800;
-  const PRESS_MS = 80;
+  // Hold pressed long enough for down (60ms), release eases over ~100ms
+  const PRESS_MS = 100;
+  const SHAKE_MS = 340;
+  const WIN_BOUNCE_MS = 440 + 240;
+  const HELP_EXIT_MS = 160;
 
   const KEY_ROWS = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -49,6 +54,7 @@
     let rowEls = [];
     let tileEls = [];
     const keyEls = new Map();
+    let helpClosing = false;
 
     buildBoard();
     buildKeyboard();
@@ -281,7 +287,7 @@
       row.classList.remove('is-invalid');
       void row.offsetWidth;
       row.classList.add('is-invalid');
-      setTimeout(() => row.classList.remove('is-invalid'), 450);
+      setTimeout(() => row.classList.remove('is-invalid'), SHAKE_MS);
     }
 
     function flashKey(key) {
@@ -338,7 +344,7 @@
       if (prefersReducedMotion()) return;
       const row = rowEls[rowIndex];
       row.classList.add('is-win-bounce');
-      await sleep(480 + 320);
+      await sleep(WIN_BOUNCE_MS);
       row.classList.remove('is-win-bounce');
     }
 
@@ -363,12 +369,41 @@
     }
 
     function openHelp() {
+      if (helpClosing) return;
+      if (!els.helpOverlay.hidden && els.helpOverlay.classList.contains('is-open')) {
+        return;
+      }
+
       els.helpOverlay.hidden = false;
+      els.helpOverlay.classList.remove('is-closing');
+
+      if (prefersReducedMotion()) {
+        els.helpOverlay.classList.add('is-open');
+        return;
+      }
+
+      // reflow so enter transition runs from the closed state
+      void els.helpOverlay.offsetWidth;
+      els.helpOverlay.classList.add('is-open');
     }
 
-    function closeHelp() {
-      els.helpOverlay.hidden = true;
+    async function closeHelp() {
       localStorage.setItem(HOW_TO_KEY, '1');
+      if (els.helpOverlay.hidden || helpClosing) return;
+
+      if (prefersReducedMotion() || !els.helpOverlay.classList.contains('is-open')) {
+        els.helpOverlay.classList.remove('is-open', 'is-closing');
+        els.helpOverlay.hidden = true;
+        return;
+      }
+
+      helpClosing = true;
+      els.helpOverlay.classList.remove('is-open');
+      els.helpOverlay.classList.add('is-closing');
+      await sleep(HELP_EXIT_MS);
+      els.helpOverlay.hidden = true;
+      els.helpOverlay.classList.remove('is-closing');
+      helpClosing = false;
     }
 
     function onKeyDown(e) {
